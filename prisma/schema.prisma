@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  username String @unique
+  age      Int
+  email    String @unique
+
+  posts Post[]
+
+  // Amigo_meu Amigo[]
+
+  @@map("users")
+}
+
+// model Amigo {
+//   id               String @id @default(uuid())
+//   user_id          String
+//   // user             User   @relation(fields: [user_id], references: [id])
+//   amigo_do_user_id String
+//   // amigo_do_user    User   @relation(fields: [amigo_do_user_id], references: [id])
+// }
+
+model Post {
+  id      String @id @default(uuid())
+  id_user String
+  user    User   @relation(fields: [id_user], references: [id])
+  title   String
+  content String
+
+  post_category PostCategory[]
+  @@map("posts")
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+
+  post_category PostCategory[]
+}
+
+model PostCategory {
+  id          String   @id @default(uuid())
+  id_post     String
+  post        Post     @relation(fields: [id_post], references: [id])
+  id_category String
+  category    Category @relation(fields: [id_category], references: [id])
+}
